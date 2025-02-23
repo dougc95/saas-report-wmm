@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, MouseEvent, JSX } from "react";
 import {
   TextField,
   Popover,
@@ -10,14 +10,14 @@ import {
 import { ArrowLeft, ArrowRight, CalendarToday } from "@mui/icons-material";
 
 export default function DatePicker() {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedStartDate, setSelectedStartDate] = useState<string | null>(
-    null
-  );
-  const [selectedEndDate, setSelectedEndDate] = useState<string | null>(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const handleTextFieldClick = (event: any) => {
+  // Store Date objects, not strings
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+
+  const handleTextFieldClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -38,18 +38,17 @@ export default function DatePicker() {
   };
 
   const handleDayClick = (dayDate: Date) => {
-    const dayString = dayDate.toLocaleDateString();
-    // If no start is set or both are already set, restart the selection.
+    // If no start is set, or both are already set, restart the selection
     if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-      setSelectedStartDate(dayString);
+      setSelectedStartDate(dayDate);
       setSelectedEndDate(null);
     } else {
-      // If the clicked day is before the start, swap the dates.
-      if (new Date(dayDate) < new Date(selectedStartDate)) {
+      // If the clicked day is before the start, swap the dates
+      if (dayDate < selectedStartDate) {
         setSelectedEndDate(selectedStartDate);
-        setSelectedStartDate(dayString);
+        setSelectedStartDate(dayDate);
       } else {
-        setSelectedEndDate(dayString);
+        setSelectedEndDate(dayDate);
       }
     }
   };
@@ -57,34 +56,46 @@ export default function DatePicker() {
   const renderCalendarDays = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
+    // Sunday-based index of first day
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysArray = [];
 
-    // Fill in empty cells for days before the first day of the month.
+    const daysArray: JSX.Element[] = [];
+
+    // Empty boxes before the 1st
     for (let i = 0; i < firstDayOfMonth; i++) {
       daysArray.push(<Box key={`empty-${i}`} />);
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
       const dayDate = new Date(year, month, i);
-      const dayString = dayDate.toLocaleDateString();
       let bgColor = "transparent";
       let textColor = "inherit";
 
-      if (selectedStartDate && dayString === selectedStartDate) {
+      // Helper to compare exact day (ignoring time)
+      const isSameDay = (d1: Date, d2: Date) =>
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate();
+
+      // Check if day is the start date
+      if (selectedStartDate && isSameDay(dayDate, selectedStartDate)) {
         bgColor = "primary.main";
         textColor = "primary.contrastText";
       }
-      if (selectedEndDate && dayString === selectedEndDate) {
+
+      // Check if day is the end date
+      if (selectedEndDate && isSameDay(dayDate, selectedEndDate)) {
         bgColor = "primary.main";
         textColor = "primary.contrastText";
       }
+
+      // Check if day is in between
       if (
         selectedStartDate &&
         selectedEndDate &&
-        dayDate > new Date(selectedStartDate) &&
-        dayDate < new Date(selectedEndDate)
+        dayDate > selectedStartDate &&
+        dayDate < selectedEndDate
       ) {
         bgColor = "grey.300";
       }
@@ -115,11 +126,15 @@ export default function DatePicker() {
     return daysArray;
   };
 
-  // Display the chosen date range or single date.
-  const displayValue =
-    selectedStartDate && selectedEndDate
-      ? `${selectedStartDate} - ${selectedEndDate}`
-      : selectedStartDate || "";
+  const displayValue = (() => {
+    if (selectedStartDate && selectedEndDate) {
+      return `${selectedStartDate.toLocaleDateString()} - ${selectedEndDate.toLocaleDateString()}`;
+    }
+    if (selectedStartDate) {
+      return selectedStartDate.toLocaleDateString();
+    }
+    return "";
+  })();
 
   return (
     <Box sx={{ m: 2 }}>
@@ -131,15 +146,14 @@ export default function DatePicker() {
           endAdornment: <CalendarToday />,
         }}
         fullWidth
+        // You might want readOnly if you don't want manual text entry
+        // InputProps={{ readOnly: true, endAdornment: <CalendarToday /> }}
       />
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
       >
         <Box sx={{ p: 2, minWidth: 300 }}>
           {/* Calendar Header */}
