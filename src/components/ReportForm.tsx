@@ -11,6 +11,7 @@ import { InputLabel } from "@mui/material";
 
 import "./ReportForm.css";
 import DatePicker from "./DatePicker";
+import MapDisplay from "./MapDisplay";
 
 export default function ReportForm() {
   const [latitude, setLatitude] = useState(0);
@@ -19,6 +20,7 @@ export default function ReportForm() {
 
   return (
     <>
+      <MapDisplay />
       <Grid2 container flexDirection={"column"}>
         <h2>Coordinates</h2>
         <div className="field">
