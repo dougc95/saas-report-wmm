@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Button,
   FormControlLabel,
@@ -10,40 +9,19 @@ import {
 import { InputLabel } from "@mui/material";
 
 import "./ReportForm.css";
-import DatePicker from "./DatePicker";
-import MapDisplay from "./MapDisplay";
-
-type AltitudeUnits = "meters" | "ft";
+import DatePicker from "../DatePicker";
+import MapDisplay from "../MapDisplay";
+import { useFormContext } from "../../context/FormProvider";
+import { useReportForm } from "./useReportForm";
 
 export default function ReportForm() {
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [altitude, setAltitude] = useState(0);
-  const [unit, setUnit] = useState<AltitudeUnits>("meters");
-
-  const handleLatitude = (e) => {
-    e.preventDefault();
-    setLatitude(e.target.value);
-  };
-
-  const handleLongitude = (e) => {
-    e.preventDefault();
-    setLongitude(e.target.value);
-  };
-
-  const handleAltitude = (e) => {
-    e.preventDefault();
-    setAltitude(e.target.value);
-  };
-
-  const handleUnits = (e) => {
-    e.preventDefault();
-    console.log(e.target.value);
-    setUnit(e.target.value);
-  };
+  const { latitude, longitude, altitude } = useFormContext();
+  const { handleLatitude, handleLongitude, handleAltitude, handleUnits } =
+    useReportForm();
 
   return (
     <>
+      <h1>WMM Report Generator</h1>
       <MapDisplay />
       <Grid2 container flexDirection={"column"}>
         <h2>Coordinates</h2>

@@ -136,6 +136,8 @@ export default function DatePicker() {
     return "";
   })();
 
+  // console.log({ selectedStartDate, selectedEndDate });
+
   return (
     <Box sx={{ m: 2 }}>
       <TextField

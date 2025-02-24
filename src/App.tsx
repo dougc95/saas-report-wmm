@@ -1,13 +1,8 @@
 import "./App.css";
-import ReportForm from "./components/ReportForm";
+import ReportForm from "./components/ReportForm/ReportForm";
 
 function App() {
-  return (
-    <>
-      <h1>WMM Report Generator</h1>
-      <ReportForm />
-    </>
-  );
+  return <ReportForm />;
 }
 
 export default App;
