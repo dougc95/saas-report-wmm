@@ -14,8 +14,6 @@ export default function MapDisplay({
   height = "450px",
 }: MapDisplayProps) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  console.log(apiKey);
-
   const src = `https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${lat},${lon}&zoom=${zoom}`;
 
   return (
