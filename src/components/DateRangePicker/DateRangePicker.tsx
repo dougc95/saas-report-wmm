@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent, JSX } from "react";
+import { useState, MouseEvent, JSX } from "react";
 import {
   TextField,
   Popover,
@@ -8,14 +8,20 @@ import {
   Button,
 } from "@mui/material";
 import { ArrowLeft, ArrowRight, CalendarToday } from "@mui/icons-material";
+import { useDateRangePicker } from "./useDateRangePicker";
+import { useFormContext } from "../../context/FormProvider";
 
 export default function DatePicker() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-
-  // Store Date objects, not strings
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+  const {
+    currentDate,
+    selectedStartDate,
+    selectedEndDate,
+    setSelectedStartDate,
+    setSelectedEndDate,
+  } = useFormContext();
+  const { handleDayClick, handleNextMonth, handlePrevMonth } =
+    useDateRangePicker();
 
   const handleTextFieldClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -23,34 +29,6 @@ export default function DatePicker() {
 
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handlePrevMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
-    );
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
-    );
-  };
-
-  const handleDayClick = (dayDate: Date) => {
-    // If no start is set, or both are already set, restart the selection
-    if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-      setSelectedStartDate(dayDate);
-      setSelectedEndDate(null);
-    } else {
-      // If the clicked day is before the start, swap the dates
-      if (dayDate < selectedStartDate) {
-        setSelectedEndDate(selectedStartDate);
-        setSelectedStartDate(dayDate);
-      } else {
-        setSelectedEndDate(dayDate);
-      }
-    }
   };
 
   const renderCalendarDays = () => {
@@ -135,8 +113,6 @@ export default function DatePicker() {
     }
     return "";
   })();
-
-  // console.log({ selectedStartDate, selectedEndDate });
 
   return (
     <Box sx={{ m: 2 }}>

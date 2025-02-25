@@ -9,7 +9,7 @@ import {
 import { InputLabel } from "@mui/material";
 
 import "./ReportForm.css";
-import DatePicker from "../DatePicker";
+import DatePicker from "../DateRangePicker/DateRangePicker";
 import MapDisplay from "../MapDisplay";
 import { useFormContext } from "../../context/FormProvider";
 import { useReportForm } from "./useReportForm";
