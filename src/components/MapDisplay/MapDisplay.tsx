@@ -1,3 +1,6 @@
+import { useMemo } from "react";
+import { useFormContext } from "../../context/FormProvider";
+
 interface MapDisplayProps {
   lat?: number;
   lon?: number;
@@ -7,13 +10,14 @@ interface MapDisplayProps {
 }
 
 export default function MapDisplay({
-  lat = -17.4143,
-  lon = -66.1788,
   zoom = 13,
   height = "300px",
 }: MapDisplayProps) {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-  const src = `https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${lat},${lon}&zoom=${zoom}`;
+
+  const { latitude, longitude } = useFormContext();
+
+  const src = `https://www.google.com/maps/embed/v1/view?key=${apiKey}&center=${latitude},${longitude}&zoom=${zoom}`;
 
   return (
     <iframe
