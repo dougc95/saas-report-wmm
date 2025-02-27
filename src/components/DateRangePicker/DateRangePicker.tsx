@@ -115,9 +115,9 @@ export default function DatePicker() {
   })();
 
   return (
-    <Box sx={{ m: 2 }}>
+    <Box sx={{ m: 7, margin: "0" }}>
       <TextField
-        label="Pick a date"
+        label="Pick date range"
         value={displayValue}
         onClick={handleTextFieldClick}
         InputProps={{

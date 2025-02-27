@@ -1,15 +1,20 @@
 import {
+  Box,
   Button,
   FormControlLabel,
   Grid2,
+  IconButton,
+  Input,
   Radio,
   RadioGroup,
+  Typography,
 } from "@mui/material";
 import { InputLabel } from "@mui/material";
 import DatePicker from "../DateRangePicker/DateRangePicker";
 import MapDisplay from "../MapDisplay/MapDisplay";
 import { useFormContext } from "../../context/FormProvider";
 import { useReportForm } from "./useReportForm";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 
 import {
   FieldContainer,
@@ -17,7 +22,10 @@ import {
   CoordinateInput,
   AltitudeFieldContainer,
   LeftAltitudeBox,
+  FormContainer,
+  CoordinateFieldContainer,
 } from "./ReportForm.styles";
+import { PhotoCamera } from "@mui/icons-material";
 
 export default function ReportForm() {
   const { latitude, longitude, altitude } = useFormContext();
@@ -25,35 +33,18 @@ export default function ReportForm() {
     useReportForm();
 
   return (
-    <>
-      <h1>WMM Report Generator</h1>
+    <FormContainer elevation={5}>
+      <Typography variant="h5" component="h1">
+        WMM Report Generator
+      </Typography>
       <MapDisplay />
-      <Grid2 container flexDirection="column">
-        <h2>Coordinates</h2>
+      <Grid2 container flexDirection="column" sx={{ padding: "1rem 0 0" }}>
         <FieldContainer>
-          <CoordinateField>
-            <InputLabel htmlFor="latitude">Latitude</InputLabel>
-            <CoordinateInput
-              value={latitude}
-              type="number"
-              id="latitude"
-              name="latitude"
-              onChange={handleLatitude}
-            />
-          </CoordinateField>
-          <CoordinateField>
-            <InputLabel htmlFor="longitude">Longitude</InputLabel>
-            <CoordinateInput
-              value={longitude}
-              type="number"
-              id="longitude"
-              name="longitude"
-              onChange={handleLongitude}
-            />
-          </CoordinateField>
           <AltitudeFieldContainer>
             <LeftAltitudeBox>
-              <InputLabel htmlFor="altitude">Altitude</InputLabel>
+              <InputLabel htmlFor="altitude" sx={{ alignSelf: "flex-start" }}>
+                Altitude
+              </InputLabel>
               <CoordinateInput
                 value={altitude}
                 type="number"
@@ -76,10 +67,65 @@ export default function ReportForm() {
               />
             </RadioGroup>
           </AltitudeFieldContainer>
+          <CoordinateFieldContainer>
+            <CoordinateField>
+              <InputLabel htmlFor="latitude" sx={{ alignSelf: "flex-start" }}>
+                Latitude
+              </InputLabel>
+              <CoordinateInput
+                value={latitude}
+                type="number"
+                id="latitude"
+                name="latitude"
+                onChange={handleLatitude}
+              />
+            </CoordinateField>
+            <CoordinateField>
+              <InputLabel htmlFor="longitude" sx={{ alignSelf: "flex-start" }}>
+                Longitude
+              </InputLabel>
+              <CoordinateInput
+                value={longitude}
+                type="number"
+                id="longitude"
+                name="longitude"
+                onChange={handleLongitude}
+              />
+            </CoordinateField>
+          </CoordinateFieldContainer>
         </FieldContainer>
       </Grid2>
-      <DatePicker />
-      <Button variant="contained">Generate</Button>
-    </>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
+          justifyContent: "center",
+          margin: "0.5rem",
+        }}
+      >
+        <DatePicker />
+        <Input
+          sx={{ display: "none" }}
+          id="file-upload"
+          type="file"
+          onChange={(e) => {
+            // Handle file selection
+            console.log(e.target.files);
+          }}
+        />
+        <label
+          htmlFor="file-upload"
+          style={{ cursor: "pointer", alignSelf: "center" }}
+          title="Override WMM.COF"
+        >
+          <UploadFileIcon fontSize="medium" color="primary" />
+        </label>
+      </Box>
+
+      <Button variant="contained" sx={{ width: "100%" }}>
+        Generate
+      </Button>
+    </FormContainer>
   );
 }
