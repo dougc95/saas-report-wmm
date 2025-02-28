@@ -47,7 +47,7 @@ export const LeftAltitudeBox = styled(Box)(({ theme }) => ({
 
 export const FormContainer = styled(Paper)(({ theme }) => ({
     width: "30vw",
-    height: "75vh",
+    height: "72vh",
     backgroundColor: "#EEEEEE",
     padding: "1rem",
     borderRadius: "1rem"

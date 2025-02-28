@@ -116,7 +116,12 @@ export default function ReportForm() {
         />
         <label
           htmlFor="file-upload"
-          style={{ cursor: "pointer", alignSelf: "center" }}
+          style={{
+            cursor: "pointer",
+            alignSelf: "center",
+            display: "inline-flex",
+            margin: "0 1rem",
+          }}
           title="Override WMM.COF"
         >
           <UploadFileIcon fontSize="medium" color="primary" />
