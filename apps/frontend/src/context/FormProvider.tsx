@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 type AltitudeUnits = "meters" | "ft";
 
@@ -19,9 +19,13 @@ interface FormContextProps {
   setSelectedEndDate: (selectedEndDate: Date | null) => void;
 }
 
+interface FormProviderProps {
+  children: ReactNode;
+}
+
 const FormContext = createContext<FormContextProps | undefined>(undefined);
 
-export const FormProvider = ({ children }) => {
+export const FormProvider = ({ children }: FormProviderProps) => {
   //Coordinates
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);

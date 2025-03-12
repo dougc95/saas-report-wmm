@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from apps.backend.app.routers import wmm_report
+from app.routers import wmm_report
 
 app = FastAPI()
 
