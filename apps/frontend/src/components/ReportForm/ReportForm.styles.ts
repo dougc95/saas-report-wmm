@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Input from "@mui/material/Input";
 import { Paper } from "@mui/material";
 
-export const FieldContainer = styled(Box)(({ theme }) => ({
+export const FieldContainer = styled(Box)(() => ({
     display: "flex",
     flexDirection: "column",
     alignSelf: "center",
@@ -18,7 +18,7 @@ export const CoordinateField = styled(Box)(({ theme }) => ({
     marginBottom: theme.spacing(2),
 }));
 
-export const CoordinateInput = styled(Input)(({ theme }) => ({
+export const CoordinateInput = styled(Input)(() => ({
     alignSelf: "flex-start",
 }));
 
@@ -32,7 +32,7 @@ export const AltitudeFieldContainer = styled(Box)(({ theme }) => ({
 
 }));
 
-export const CoordinateFieldContainer = styled(Box)(({ theme }) => ({
+export const CoordinateFieldContainer = styled(Box)(() => ({
     display: "flex",
     flexDirection: "row",
     gap: "0 2rem"
@@ -45,9 +45,9 @@ export const LeftAltitudeBox = styled(Box)(({ theme }) => ({
     gap: theme.spacing(1), // Optional spacing between label and input
 }));
 
-export const FormContainer = styled(Paper)(({ theme }) => ({
+export const FormContainer = styled(Paper)(() => ({
     width: "30vw",
-    height: "75vh",
+    height: "72vh",
     backgroundColor: "#EEEEEE",
     padding: "1rem",
     borderRadius: "1rem"

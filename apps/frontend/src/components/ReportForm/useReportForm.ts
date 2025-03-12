@@ -1,4 +1,5 @@
 import { useFormContext } from "../../context/FormProvider";
+import { ChangeEvent } from "react";
 
 export function useReportForm() {
     const {
@@ -8,22 +9,23 @@ export function useReportForm() {
         setUnit,
     } = useFormContext();
 
-    const handleLatitude = (e) => {
+    const handleLatitude = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        setLatitude(e.target.value);
+        setLatitude(parseInt(e.target.value));
     };
 
-    const handleLongitude = (e) => {
+    const handleLongitude = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        setLongitude(e.target.value);
+        setLongitude(parseInt(e.target.value));
     };
 
-    const handleAltitude = (e) => {
+    const handleAltitude = (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        setAltitude(e.target.value);
+        setAltitude(parseInt(e.target.value));
     };
 
-    const handleUnits = (e) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleUnits = (e: any) => {
         e.preventDefault();
         console.log(e.target.value);
         setUnit(e.target.value);

@@ -3,7 +3,6 @@ import {
   Button,
   FormControlLabel,
   Grid2,
-  IconButton,
   Input,
   Radio,
   RadioGroup,
@@ -25,7 +24,6 @@ import {
   FormContainer,
   CoordinateFieldContainer,
 } from "./ReportForm.styles";
-import { PhotoCamera } from "@mui/icons-material";
 
 export default function ReportForm() {
   const { latitude, longitude, altitude } = useFormContext();
@@ -109,14 +107,18 @@ export default function ReportForm() {
           sx={{ display: "none" }}
           id="file-upload"
           type="file"
-          onChange={(e) => {
-            // Handle file selection
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             console.log(e.target.files);
           }}
         />
         <label
           htmlFor="file-upload"
-          style={{ cursor: "pointer", alignSelf: "center" }}
+          style={{
+            cursor: "pointer",
+            alignSelf: "center",
+            display: "inline-flex",
+            margin: "0 1rem",
+          }}
           title="Override WMM.COF"
         >
           <UploadFileIcon fontSize="medium" color="primary" />
