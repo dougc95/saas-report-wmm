@@ -1,0 +1,18 @@
+{
+  "name": "my-monorepo",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "cd apps/frontend && npm run dev",
+    "dev:backend": "cd apps/backend && uvicorn app.main:app --reload --port 8000",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "test:frontend": "cd apps/frontend && npm test",
+    "test:backend": "cd apps/backend && pytest",
+    "test": "npm run test:frontend && npm run test:backend",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
