@@ -26,9 +26,43 @@ import {
 } from "./ReportForm.styles";
 
 export default function ReportForm() {
-  const { latitude, longitude, altitude } = useFormContext();
+  const {
+    latitude,
+    longitude,
+    altitude,
+    unit,
+    selectedStartDate,
+    selectedEndDate,
+  } = useFormContext();
   const { handleLatitude, handleLongitude, handleAltitude, handleUnits } =
     useReportForm();
+
+  const handleInputSubmission = async () => {
+    let url = import.meta.env.VITE_WMM_SERVER;
+    url = `${url}/wmm/report`;
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          latitude,
+          longitude,
+          altitude,
+          altitude_unit: unit,
+          start_date: selectedStartDate?.toISOString().split("T")[0],
+          end_date: selectedEndDate?.toISOString().split("T")[0],
+          step: 1,
+        }),
+      });
+      const json = await response.json();
+      console.log(json);
+    } catch (error: unknown) {
+      console.error((error as Error).message);
+    }
+  };
 
   return (
     <FormContainer elevation={5}>
@@ -125,7 +159,11 @@ export default function ReportForm() {
         </label>
       </Box>
 
-      <Button variant="contained" sx={{ width: "100%" }}>
+      <Button
+        variant="contained"
+        sx={{ width: "100%" }}
+        onClick={handleInputSubmission}
+      >
         Generate
       </Button>
     </FormContainer>
