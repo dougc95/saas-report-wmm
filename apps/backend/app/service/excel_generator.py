@@ -1,5 +1,5 @@
 import openpyxl
-from models.wmm_model import WMMModel
+from app.models.wmm_model import WMMModel
 from io import BytesIO
 
 

@@ -1,6 +1,6 @@
 from io import BytesIO
-from models.wmm_model import WMMModel
-from excel_generator import ExcelGenerator
+from app.models.wmm_model import WMMModel
+from app.service.excel_generator import ExcelGenerator
 
 def generate_excel_report(payload: dict) -> BytesIO:
     """
