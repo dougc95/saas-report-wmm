@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Response
 from app.models.wmm_report import WmmReport
 from app.models.wmm_analysis import WmmAnalysis
-from app.service.wmm_service import calculate_wmm_service
+from app.service.wmm_service import calculate_wmm_service, single_wmm_service
 from app.service.spreadsheet_service import generate_excel_report
 from datetime import datetime
 
@@ -61,24 +61,9 @@ def create_wmm(analysis: WmmAnalysis):
     Receive a WmmAnalysis payload, perform WMM calculation for a single date,
     and return the results without next year analysis.
     """
-    # Prepare payload for WMM service - using only a single date
-    payload = {
-        "lat": analysis.latitude,
-        "lon": analysis.longitude,
-        "alt": analysis.altitude,
-        "alt_unit": analysis.altitude_unit,
-        "start_date": analysis.record_date,
-        "end_date": analysis.record_date,  # Same as start_date for single date analysis
-        "step_days": 1
-    }
-    
-    # Calculate WMM values for the single date
-    # We'll modify the data to exclude the variation data
-    wmm_results = calculate_wmm_service(payload)
-    single_result = wmm_results["data"][0]
-    del single_result["variation"]  # Remove variation since it's not needed for single date
+    wmm_result = single_wmm_service(analysis)
     
     return {
         "message": "WMM Analysis completed successfully",
-        "data": single_result
+        "data": wmm_result
     }

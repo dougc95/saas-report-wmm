@@ -31,7 +31,7 @@ class WmmAnalysis(BaseModel):
         ...,
         description="Unit of altitude: either 'meters' or 'feet'."
     )
-    record_date: date = Field(
+    record_date: str = Field(
         ...,
         description="Start date (YYYY-MM-DD format)."
     )

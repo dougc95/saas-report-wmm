@@ -1,6 +1,8 @@
 from pywmm import WMMv2, date_utils
 from datetime import datetime, timedelta
 from fastapi import HTTPException
+from app.models.wmm_analysis import WmmAnalysis
+from logging import Logger
 
 def date_range(start_date: str, end_date: str, step: int):
     """Generate a list of dates (as yyyy-mm-dd strings) between start and end dates using the given step."""
@@ -14,18 +16,23 @@ def date_range(start_date: str, end_date: str, step: int):
     return dates
 
 
-def calculate_wmm(latitude: float, longitude: float, altitude: float, date_str: str):
+def calculate_wmm(latitude: float,
+                  longitude: float,
+                  altitude: float,
+                  date_str: str):
     """Calculate the magnetic field values for a given date and location."""
-    dt = datetime.strptime(date_str, "%Y-%m-%d")
-    # Get the decimal year from the date (pywmm.date_utils.decimal_year expects a datetime)
-    decimal_year = date_utils.decimal_year(dt)
-    dec = WMMv2.get_declination(latitude, longitude, decimal_year, altitude)
-    dip = WMMv2.get_dip_angle(latitude, longitude, decimal_year, altitude)
-    ti = WMMv2.get_intensity(latitude, longitude, decimal_year, altitude)
-    bh = WMMv2.get_horizontal_intensity(latitude, longitude, decimal_year, altitude)
-    bx = WMMv2.get_north_intensity(latitude, longitude, decimal_year, altitude)
-    by = WMMv2.get_east_intensity(latitude, longitude, decimal_year, altitude)
-    bz = WMMv2.get_vertical_intensity(latitude, longitude, decimal_year, altitude)
+    decimal_year = date_utils.decimal_year(date_str)
+    wmm = WMMv2()
+    
+    # Call methods on the instance
+    dec = wmm.get_declination(latitude, longitude, decimal_year, altitude)
+    dip = wmm.get_dip_angle(latitude, longitude, decimal_year, altitude)
+    ti = wmm.get_intensity(latitude, longitude, decimal_year, altitude)
+    bh = wmm.get_horizontal_intensity(latitude, longitude, decimal_year, altitude)
+    bx = wmm.get_north_intensity(latitude, longitude, decimal_year, altitude)
+    by = wmm.get_east_intensity(latitude, longitude, decimal_year, altitude)
+    bz = wmm.get_vertical_intensity(latitude, longitude, decimal_year, altitude)
+    
     return {
         "date": date_str,
         "dec": dec,
@@ -99,3 +106,23 @@ def calculate_wmm_service(payload: dict):
         return {"success": True, "data": results}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+def single_wmm_service(payload: WmmAnalysis):
+    lat = payload.latitude
+    lon = payload.longitude
+    original_alt = payload.altitude
+    alt_unit = payload.altitude_unit
+    record_date = payload.record_date
+
+    if alt_unit == "feet":
+        altitude_km = original_alt * 0.3048780487804878 / 1000
+    else:  
+        altitude_km = original_alt / 1000
+    
+    result = calculate_wmm(altitude=altitude_km,
+                            date_str=record_date,
+                            latitude=lat,
+                            longitude=lon)
+
+    return {"success": True, "data": result}
