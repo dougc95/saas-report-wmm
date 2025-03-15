@@ -1,6 +1,6 @@
 from enum import Enum
-from datetime import date
-from pydantic import BaseModel, Field, conint
+from datetime import date, datetime
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 class AltitudeUnit(str, Enum):
     meters = "meters"
@@ -33,11 +33,11 @@ class WmmReport(BaseModel):
         ...,
         description="Unit of altitude: either 'meters' or 'feet'."
     )
-    start_date: date = Field(
+    start_date: str = Field(
         ...,
         description="Start date (YYYY-MM-DD format)."
     )
-    end_date: date = Field(
+    end_date: str = Field(
         ...,
         description="End date (YYYY-MM-DD format)."
     )
@@ -45,6 +45,55 @@ class WmmReport(BaseModel):
         ge=1,
         description="Step size for WMM computations. Must be ≥ 1. Defaults to 1."
     )
+
+    @field_validator('start_date', 'end_date')
+    @classmethod
+    def validate_date_format(cls, date_str: str) -> str:
+        """
+        Validate that date strings are in the correct format.
+        
+        Args:
+            date_str (str): The date string to validate
+            
+        Returns:
+            str: The validated date string
+            
+        Raises:
+            ValueError: If date is not in YYYY-MM-DD format
+        """
+        try:
+            datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            raise ValueError("Date must be in YYYY-MM-DD format")
+        
+        return date_str
+
+    @model_validator(mode='after')
+    def validate_dates_order(self) -> 'WmmReport':
+        """
+        Validate that end_date is later than start_date.
+        
+        Returns:
+            WmmReport: The validated model instance
+            
+        Raises:
+            ValueError: If end_date is not after start_date
+        """
+        if hasattr(self, 'start_date') and hasattr(self, 'end_date'):
+            try:
+                start_date_obj = datetime.strptime(self.start_date, '%Y-%m-%d').date()
+                end_date_obj = datetime.strptime(self.end_date, '%Y-%m-%d').date()
+                
+                if end_date_obj <= start_date_obj:
+                    raise ValueError("end_date must be later than start_date")
+            except ValueError as e:
+                # Only raise our custom error if it's about the date comparison
+                if "end_date must be" in str(e):
+                    raise
+                # Otherwise, it's likely an issue with the format which will be caught by the field validator
+                pass
+                
+        return self
 
     def __str__(self):
         return (
@@ -88,3 +137,31 @@ class WmmReport(BaseModel):
             step (int): Step size to update, if your application recalculates or changes it.
         """
         self.step = step
+
+# # Example usage
+# if __name__ == "__main__":
+#     try:
+#         # Valid example
+#         report = WmmReport(
+#             latitude=40.7128,
+#             longitude=-74.0060,
+#             altitude=100,
+#             altitude_unit=AltitudeUnit.meters,
+#             start_date="2023-01-01",
+#             end_date="2023-12-31",
+#             step=1
+#         )
+#         print(f"Valid report: {report}")
+        
+#         # Invalid example - end_date before start_date
+#         invalid_report = WmmReport(
+#             latitude=40.7128,
+#             longitude=-74.0060,
+#             altitude=100,
+#             altitude_unit=AltitudeUnit.meters,
+#             start_date="2023-12-31",
+#             end_date="2023-01-01",
+#             step=1
+#         )
+#     except ValueError as e:
+#         print(f"Validation error: {e}")
