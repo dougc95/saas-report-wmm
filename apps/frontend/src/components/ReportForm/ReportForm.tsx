@@ -57,8 +57,33 @@ export default function ReportForm() {
           step: 1,
         }),
       });
-      const json = await response.json();
-      console.log(json);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let filename = "wmm_report.xlsx";
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="?([^"]*)"?/);
+        if (filenameMatch && filenameMatch[1]) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      // Create a temporary link element
+      const downloadLink = document.createElement("a");
+      downloadLink.href = blobUrl;
+      downloadLink.download = filename;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      URL.revokeObjectURL(blobUrl);
     } catch (error: unknown) {
       console.error((error as Error).message);
     }
@@ -91,7 +116,7 @@ export default function ReportForm() {
               onChange={handleUnits}
               row
             >
-              <FormControlLabel value="ft" control={<Radio />} label="ft" />
+              <FormControlLabel value="feet" control={<Radio />} label="feet" />
               <FormControlLabel
                 value="meters"
                 control={<Radio />}

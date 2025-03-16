@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
-type AltitudeUnits = "meters" | "ft";
+type AltitudeUnits = "meters" | "feet";
 
 interface FormContextProps {
   latitude: number;
