@@ -2,6 +2,7 @@
   "name": "wmm-monorepo",
   "private": true,
   "scripts": {
+    "build": "cd apps/frontend && npm install && npm run build",
     "dev:frontend": "cd apps/frontend && npm run dev",
     "dev:backend": "cd apps/backend && uvicorn app.main:app --reload --port 8000",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",

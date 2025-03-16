@@ -5,7 +5,7 @@ from app.service.wmm_service import report_wmm_service, single_wmm_service
 from app.service.spreadsheet_service import generate_excel_report
 from datetime import datetime
 
-router = APIRouter(prefix="/wmm", tags=["WMM"])
+router = APIRouter(prefix="/api/wmm", tags=["WMM"])
 
 @router.post("/report", summary="Create a WMM report for a range of dates")
 def create_wmm_report(report: WmmReport):

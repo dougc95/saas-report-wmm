@@ -38,8 +38,7 @@ export default function ReportForm() {
     useReportForm();
 
   const handleInputSubmission = async () => {
-    let url = import.meta.env.VITE_WMM_SERVER;
-    url = `${url}/wmm/report`;
+    const url = "/api/wmm/report";
 
     try {
       const response = await fetch(url, {
